@@ -1,0 +1,117 @@
+Datos personales
+
+Nombre
+Correo electrénico
+Teléfono
+
+Direccién
+
+Fecha de nacimiento
+Lugar de nacimiento
+Género
+Nacionalidad
+
+Estado civil
+
+Perfil
+
+ose eette
+Curriculum vitae
+
+Ingeniero en informacion
+
+Oswaldo Andres Leon Castillo
+oswaldoleon72@gmail.com
+04124231514
+
+los mangos residencia puente de piedra, 2001 valencia
+Edo Carabobo
+
+22 de diciembre de 2001
+valencia, edo carabobo
+Hombre
+
+Venezolano
+
+Soltero
+
+Ingeniero en informacion
+
+Ingeniero Informatico egresado de la Universidad Tecnoldgica del Centro (UNITEC), con un sdlido dominio de espafiol,
+inglés y francés. Apasionado por el desarrollo de software, me especializo en el desarrollo backend y poseo habilidades
+complementarias en el frontend, lo que me permite abordar proyectos de manera integral y eficiente.
+
+Habilidades Técnicas
+
+e Lenguajes de Programaci6on: Java, Python, JavaScript
+
+e Frameworks: Spring Boot, Django, React, Angular
+
+e Bases de Datos: MySQL, PostgreSQL, MongoDB
+
+e Herramientas y Tecnologias: Docker, Kubernetes, Git, ClI/CD, RESTful APIs, GraphQL
+e Metodologias Agiles: Scrum, Kanban
+
+Experiencia Destacada
+
+e Desarrollo Backend: Disefio y desarrollo de servicios y APIs robustas y escalables utilizando Spring Boot y
+
+Django.
+
+e Desarrollo Frontend: Implementacidén de interfaces de usuario dinamicas y responsivas con React y Angular.
+e DevOps: Configuracién y administracién de contenedores Docker y orquestacién con Kubernetes para asegurar
+
+despliegues eficientes y fiables.
+
+e Bases de Datos: Modelado, administracion y optimizaci6n de bases de datos relacionales y no relacionales.
+
+Mi objetivo es aportar valor significativo tanto a nivel personal como profesional, colaborando en equipos
+multidisciplinarios para desarrollar soluciones innovadoras y eficientes. Estoy comprometido con el aprendizaje continuo
+y la aplicacién de mis conocimientos en proyectos desafiantes que impulsen el crecimiento y éxito de la empresa.
+
+
+
+Formacion
+
+sep 2019 - dic 2023
+
+Experiencia
+
+ene 2022 - presente
+
+Idiomas
+
+Ingles
+Frances
+
+Espafiol
+
+CV Inscrito y
+desde Infojobs
+
+Ingeniero Informatico
+UNITEC (Universiad Tecnologia del centro), Valencia, Venezuela
+Graduado de TSU en informatica y Ingeniero Informatico en la institucion
+
+Desarrallador de Aplicaciones
+
+Leon Cuello, Valencia Venezuela
+
+Como desarrollador, he trabajado en el mantenimiento y optimizacién de bases
+de datos para sistemas de caja registradora usando MySQL y DBz2, y en el
+desarrollo y mejora del cddigo en Java. Ademas, desarrollé el backend de una
+pagina de consultas de precios utilizando Node.js y Python, y contribu en el
+frontend con React. Mi experiencia abarca tanto el backend como el frontend,
+destacando mi capacidad para manejar multiples tecnologias y aportar valor en
+cada proyecto.
+
+Alto
+Alto
+
+Fluido
+
+Pasatiempos e intereses
+
+@ Practicante de mecatronica
+
+lf Practicante de MMA y Deportes de contacto
