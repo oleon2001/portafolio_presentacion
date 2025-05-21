@@ -1,107 +1,108 @@
-import { Box, Container, Typography, Grid, Card, CardContent, CardMedia, Chip } from '@mui/material';
-import { motion } from 'framer-motion';
+// frontend/src/pages/Projects.tsx
+import React, { useEffect, useState } from 'react';
+import { Project } from '../interfaces'; // Importa la interfaz
 
-interface Project {
-  title: string;
-  description: string;
-  technologies: string[];
-  image: string;
-  features: string[];
-}
+// URL base de tu backend Django. Asegúrate de que coincida con donde se ejecuta tu backend.
+// Si tu backend sirve imágenes desde /media/, y la API devuelve rutas relativas como 'portfolio/images/nombre.jpg',
+// necesitarás construir la URL completa.
+const BACKEND_URL = 'http://localhost:8000'; // O la URL donde esté desplegado tu backend
 
-const projects: Project[] = [
-  {
-    title: 'Task Manager Pro',
-    description: 'Sistema avanzado de gestión de tareas con backend en Django y frontend en React. Implementa autenticación segura, gestión de tareas en tiempo real y un dashboard interactivo.',
-    technologies: ['Django', 'React', 'PostgreSQL', 'Django REST Framework', 'JWT'],
-    image: '/task-manager.jpg',
-    features: [
-      'Autenticación segura con JWT',
-      'Creación y gestión de tareas en tiempo real',
-      'Categorización y etiquetado de tareas',
-      'Dashboard con estadísticas y gráficos',
-      'Notificaciones push y por email',
-      'API RESTful documentada con Swagger'
-    ]
+const Projects: React.FC = () => {
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        // La URL de tu API de proyectos. Verifica que sea la correcta.
+        const response = await fetch(`${BACKEND_URL}/api/portfolio/projects/`);
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
+        }
+        const data: Project[] = await response.json();
+        setProjects(data);
+      } catch (err: any) {
+        console.error("Error al obtener proyectos:", err);
+        setError(err.message || 'Ocurrió un error al cargar los proyectos.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-sky-500"></div>
+        <p className="ml-4 text-lg text-gray-600">Cargando proyectos...</p>
+      </div>
+    );
   }
-];
 
-const Projects = () => {
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <h1 className="text-3xl font-bold text-red-600 mb-4">Error</h1>
+        <p className="text-lg text-gray-700">{error}</p>
+        <p className="mt-4 text-gray-500">
+          Asegúrate de que el servidor backend esté corriendo en <a href={BACKEND_URL} className="text-sky-500 hover:underline">{BACKEND_URL}</a> y que la ruta de la API sea correcta.
+        </p>
+      </div>
+    );
+  }
+
+  if (projects.length === 0) {
+    return (
+      <div className="container mx-auto px-4 py-8 text-center">
+        <h1 className="text-3xl font-bold text-gray-700 mb-4">Proyectos</h1>
+        <p className="text-lg text-gray-500">Aún no hay proyectos para mostrar.</p>
+      </div>
+    );
+  }
+
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
-      <Typography variant="h2" gutterBottom align="center">
-        Proyectos Destacados
-      </Typography>
-      <Typography variant="h5" color="text.secondary" paragraph align="center">
-        Proyectos que demuestran mis habilidades en desarrollo full-stack
-      </Typography>
-      <Grid container spacing={4}>
-        {projects.map((project, index) => (
-          <Grid item xs={12} md={6} key={index}>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: index * 0.2 }}
-            >
-              <Card
-                sx={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  '&:hover': {
-                    transform: 'translateY(-8px)',
-                    transition: 'transform 0.3s ease-in-out',
-                  },
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  height="200"
-                  image={project.image}
-                  alt={project.title}
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="h2">
-                    {project.title}
-                  </Typography>
-                  <Typography paragraph color="text.secondary">
-                    {project.description}
-                  </Typography>
-                  <Box sx={{ mb: 2 }}>
-                    <Typography variant="subtitle1" gutterBottom>
-                      Características principales:
-                    </Typography>
-                    <ul style={{ margin: 0, paddingLeft: '20px' }}>
-                      {project.features.map((feature: string, idx: number) => (
-                        <li key={idx}>
-                          <Typography variant="body2" color="text.secondary">
-                            {feature}
-                          </Typography>
-                        </li>
-                      ))}
-                    </ul>
-                  </Box>
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                    {project.technologies.map((tech: string) => (
-                      <Chip
-                        key={tech}
-                        label={tech}
-                        size="small"
-                        sx={{
-                          backgroundColor: 'primary.light',
-                          color: 'primary.contrastText',
-                        }}
-                      />
-                    ))}
-                  </Box>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </Grid>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold text-center text-gray-800 mb-12">Mis Proyectos</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {projects.map((project) => (
+          <div key={project.id} className="bg-white rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out flex flex-col">
+            <img 
+              // Asumiendo que project.image es una ruta relativa como "portfolio/images/imagen.jpg"
+              // y tu backend sirve estos archivos desde /media/
+              // Si la API ya devuelve la URL completa, puedes usar project.image directamente.
+              src={project.image.startsWith('http') ? project.image : `${BACKEND_URL}${project.image}`} 
+              alt={project.title} 
+              className="w-full h-56 object-cover"
+              onError={(e) => {
+                // Fallback si la imagen no carga
+                (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/e2e8f0/94a3b8?text=Imagen+no+disponible';
+                (e.target as HTMLImageElement).alt = 'Imagen no disponible';
+              }}
+            />
+            <div className="p-6 flex flex-col flex-grow">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-2">{project.title}</h2>
+              <p className="text-gray-600 text-sm mb-4 flex-grow">{project.description}</p>
+              {project.link && (
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-block mt-auto bg-sky-500 text-white text-center font-medium py-2 px-4 rounded-md hover:bg-sky-600 transition-colors duration-200 self-start"
+                >
+                  Ver Proyecto
+                </a>
+              )}
+            </div>
+          </div>
         ))}
-      </Grid>
-    </Container>
+      </div>
+    </div>
   );
 };
 
-export default Projects; 
+export default Projects;

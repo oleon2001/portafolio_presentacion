@@ -1,150 +1,60 @@
-import { Box, Container, Typography, Grid, Paper, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import { motion } from 'framer-motion';
-import SchoolIcon from '@mui/icons-material/School';
-import WorkIcon from '@mui/icons-material/Work';
-import LanguageIcon from '@mui/icons-material/Language';
-import CodeIcon from '@mui/icons-material/Code';
-import StorageIcon from '@mui/icons-material/Storage';
-import BuildIcon from '@mui/icons-material/Build';
+// frontend/src/pages/About.tsx
+import React from 'react';
 
-const About = () => {
-  const skills = [
-    { icon: <CodeIcon />, text: 'Lenguajes: Java, Python, JavaScript' },
-    { icon: <BuildIcon />, text: 'Frameworks: Spring Boot, Django, React, Angular' },
-    { icon: <StorageIcon />, text: 'Bases de Datos: MySQL, PostgreSQL, MongoDB' },
-  ];
-
+const About: React.FC = () => {
   return (
-    <Container maxWidth="lg" sx={{ py: 8 }}>
-      <Grid container spacing={4}>
-        <Grid item xs={12} md={6}>
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <Typography variant="h2" gutterBottom>
-              Sobre Mí
-            </Typography>
-            <Typography variant="body1" paragraph>
-              Soy un Ingeniero Informático egresado de la Universidad Tecnológica del Centro (UNITEC),
-              con un sólido dominio de español, inglés y francés. Me especializo en el desarrollo
-              backend y poseo habilidades complementarias en el frontend, lo que me permite abordar
-              proyectos de manera integral y eficiente.
-            </Typography>
-            <Typography variant="body1" paragraph>
-              Mi objetivo es aportar valor significativo tanto a nivel personal como profesional,
-              colaborando en equipos multidisciplinarios para desarrollar soluciones innovadoras
-              y eficientes. Estoy comprometido con el aprendizaje continuo y la aplicación de
-              mis conocimientos en proyectos desafiantes.
-            </Typography>
-          </motion.div>
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <Paper elevation={3} sx={{ p: 4 }}>
-              <Typography variant="h5" gutterBottom>
-                Educación
-              </Typography>
-              <List>
-                <ListItem>
-                  <ListItemIcon>
-                    <SchoolIcon color="primary" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Ingeniero Informático"
-                    secondary="UNITEC (Universidad Tecnológica del Centro), Valencia, Venezuela"
-                  />
-                </ListItem>
-              </List>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 main-container">
+      <div className="max-w-3xl mx-auto bg-white p-8 md:p-12 rounded-xl shadow-2xl">
+        <h1 className="text-4xl font-bold text-center text-gray-800 mb-10">Sobre Mí</h1>
+        
+        <div className="space-y-8 text-lg text-gray-700">
+          <section>
+            <h2 className="text-2xl font-semibold text-sky-600 mb-3">Mi Pasión</h2>
+            <p>
+              ¡Hola! Soy Oswaldo Leon, un desarrollador de software con una profunda pasión por la tecnología y la resolución creativa de problemas. 
+              Me encanta transformar ideas complejas en aplicaciones web funcionales, intuitivas y estéticamente agradables.
+              Mi objetivo es siempre aprender y aplicar nuevas tecnologías para construir productos de alta calidad.
+            </p>
+          </section>
 
-              <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
-                Experiencia
-              </Typography>
-              <List>
-                <ListItem>
-                  <ListItemIcon>
-                    <WorkIcon color="primary" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Desarrollador de Aplicaciones"
-                    secondary="Leon Cuello, Valencia Venezuela (2022 - Presente)"
-                  />
-                </ListItem>
-              </List>
+          <section>
+            <h2 className="text-2xl font-semibold text-sky-600 mb-3">Experiencia y Habilidades</h2>
+            <p>
+              Tengo experiencia trabajando con una variedad de tecnologías frontend y backend, incluyendo:
+            </p>
+            <ul className="list-disc list-inside mt-2 space-y-1 pl-4">
+              <li><strong>Frontend:</strong> React, TypeScript, JavaScript (ES6+), HTML5, CSS3, Tailwind CSS, Redux.</li>
+              <li><strong>Backend:</strong> Python (Django, Flask), Node.js (Express).</li>
+              <li><strong>Bases de Datos:</strong> PostgreSQL, MySQL, MongoDB, SQLite.</li>
+              <li><strong>Herramientas:</strong> Git, Docker, Vite, Webpack, Jest.</li>
+            </ul>
+            <p className="mt-2">
+              Me considero un aprendiz constante, siempre buscando expandir mi conjunto de habilidades y mantenerme actualizado con las últimas tendencias en el desarrollo web.
+            </p>
+          </section>
 
-              <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
-                Idiomas
-              </Typography>
-              <List>
-                <ListItem>
-                  <ListItemIcon>
-                    <LanguageIcon color="primary" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Español"
-                    secondary="Nativo"
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <LanguageIcon color="primary" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Inglés"
-                    secondary="Alto"
-                  />
-                </ListItem>
-                <ListItem>
-                  <ListItemIcon>
-                    <LanguageIcon color="primary" />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary="Francés"
-                    secondary="Alto"
-                  />
-                </ListItem>
-              </List>
-            </Paper>
-          </motion.div>
-        </Grid>
-      </Grid>
+          <section>
+            <h2 className="text-2xl font-semibold text-sky-600 mb-3">Mis Intereses</h2>
+            <p>
+              Además de la programación, disfruto de [Menciona aquí algunos de tus hobbies o intereses, por ejemplo: "la fotografía, explorar nuevas tecnologías emergentes, y contribuir a proyectos de código abierto."]. 
+              Estos intereses me ayudan a mantener una perspectiva fresca y a encontrar inspiración en diferentes áreas.
+            </p>
+          </section>
 
-      <Box sx={{ mt: 8 }}>
-        <Typography variant="h4" gutterBottom align="center">
-          Habilidades Técnicas
-        </Typography>
-        <Grid container spacing={2} sx={{ mt: 2 }}>
-          {skills.map((skill, index) => (
-            <Grid item xs={12} md={4} key={index}>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.2 }}
-              >
-                <Paper
-                  elevation={2}
-                  sx={{
-                    p: 3,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 2,
-                  }}
-                >
-                  {skill.icon}
-                  <Typography variant="body1">{skill.text}</Typography>
-                </Paper>
-              </motion.div>
-            </Grid>
-          ))}
-        </Grid>
-      </Box>
-    </Container>
+          <div className="text-center mt-12">
+            <a 
+              href="/CVOswaldoAndresLeonCastillo (1).pdf" // Asegúrate que esta ruta sea correcta o usa una URL completa si está hosteado
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="bg-sky-500 text-white font-semibold py-3 px-8 rounded-lg shadow-md hover:bg-sky-600 transition-colors duration-300 text-lg"
+            >
+              Descargar mi CV
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
-export default About; 
+export default About;
