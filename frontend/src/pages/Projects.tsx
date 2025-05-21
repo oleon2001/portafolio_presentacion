@@ -1,11 +1,11 @@
 // frontend/src/pages/Projects.tsx
-import React, { useEffect, useState } from 'react';
-import { Project } from '../interfaces'; // Importa la interfaz
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; // Asegúrate de haberlo instalado: npm install axios
+import { Project } from '../interfaces'; // Importa la interfaz actualizada
 
-// URL base de tu backend Django. Asegúrate de que coincida con donde se ejecuta tu backend.
-// Si tu backend sirve imágenes desde /media/, y la API devuelve rutas relativas como 'portfolio/images/nombre.jpg',
-// necesitarás construir la URL completa.
-const BACKEND_URL = 'http://localhost:8000'; // O la URL donde esté desplegado tu backend
+// Define la URL base de tu API de Django.
+// Es una buena práctica almacenarla en una variable de entorno para producción.
+const API_BASE_URL = 'http://localhost:8000/api';
 
 const Projects: React.FC = () => {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -17,87 +17,96 @@ const Projects: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        // La URL de tu API de proyectos. Verifica que sea la correcta.
-        const response = await fetch(`${BACKEND_URL}/api/portfolio/projects/`);
-        if (!response.ok) {
-          throw new Error(`Error HTTP: ${response.status} ${response.statusText}`);
+        // Realiza la petición GET al endpoint de proyectos de tu API Django
+        const response = await axios.get<Project[]>(`${API_BASE_URL}/projects/`);
+        setProjects(response.data);
+      } catch (err) {
+        if (axios.isAxiosError(err)) {
+          console.error('Error fetching projects:', err.message);
+          setError(`Error al cargar los proyectos: ${err.message}. Asegúrate de que el backend Django esté corriendo en http://localhost:8000 y que CORS esté configurado correctamente.`);
+        } else {
+          console.error('Unexpected error:', err);
+          setError('Ocurrió un error inesperado al cargar los proyectos.');
         }
-        const data: Project[] = await response.json();
-        setProjects(data);
-      } catch (err: any) {
-        console.error("Error al obtener proyectos:", err);
-        setError(err.message || 'Ocurrió un error al cargar los proyectos.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchProjects();
-  }, []);
+  }, []); // El array vacío asegura que useEffect se ejecute solo una vez al montar el componente
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-sky-500"></div>
-        <p className="ml-4 text-lg text-gray-600">Cargando proyectos...</p>
-      </div>
-    );
+    return <div className="container mx-auto p-4 text-center">Cargando proyectos...</div>;
   }
 
   if (error) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <h1 className="text-3xl font-bold text-red-600 mb-4">Error</h1>
-        <p className="text-lg text-gray-700">{error}</p>
-        <p className="mt-4 text-gray-500">
-          Asegúrate de que el servidor backend esté corriendo en <a href={BACKEND_URL} className="text-sky-500 hover:underline">{BACKEND_URL}</a> y que la ruta de la API sea correcta.
-        </p>
-      </div>
-    );
+    return <div className="container mx-auto p-4 text-center text-red-500">{error}</div>;
   }
 
   if (projects.length === 0) {
-    return (
-      <div className="container mx-auto px-4 py-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-700 mb-4">Proyectos</h1>
-        <p className="text-lg text-gray-500">Aún no hay proyectos para mostrar.</p>
-      </div>
-    );
+    return <div className="container mx-auto p-4 text-center">No hay proyectos para mostrar. Puedes añadir algunos desde el panel de administración de Django.</div>;
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center text-gray-800 mb-12">Mis Proyectos</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-6 text-center">Mis Proyectos</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {projects.map((project) => (
-          <div key={project.id} className="bg-white rounded-lg shadow-xl overflow-hidden transform hover:scale-105 transition-transform duration-300 ease-in-out flex flex-col">
-            <img 
-              // Asumiendo que project.image es una ruta relativa como "portfolio/images/imagen.jpg"
-              // y tu backend sirve estos archivos desde /media/
-              // Si la API ya devuelve la URL completa, puedes usar project.image directamente.
-              src={project.image.startsWith('http') ? project.image : `${BACKEND_URL}${project.image}`} 
-              alt={project.title} 
-              className="w-full h-56 object-cover"
-              onError={(e) => {
-                // Fallback si la imagen no carga
-                (e.target as HTMLImageElement).src = 'https://placehold.co/600x400/e2e8f0/94a3b8?text=Imagen+no+disponible';
-                (e.target as HTMLImageElement).alt = 'Imagen no disponible';
-              }}
-            />
-            <div className="p-6 flex flex-col flex-grow">
-              <h2 className="text-2xl font-semibold text-gray-800 mb-2">{project.title}</h2>
-              <p className="text-gray-600 text-sm mb-4 flex-grow">{project.description}</p>
-              {project.link && (
+          <div key={project.id} className="bg-white rounded-lg shadow-lg overflow-hidden p-6 transform hover:scale-105 transition-transform duration-300">
+            {project.image_url && (
+              <img 
+                src={project.image_url} 
+                alt={`Imagen de ${project.title}`} 
+                className="w-full h-48 object-cover mb-4 rounded"
+                onError={(e) => {
+                  // Manejo de error si la imagen no carga
+                  const target = e.target as HTMLImageElement;
+                  target.onerror = null; // previene bucles infinitos si la imagen placeholder también falla
+                  target.src = `https://placehold.co/600x400/EEE/31343C?text=Imagen+no+disponible`;
+                  target.alt = `Placeholder para ${project.title}`;
+                }}
+              />
+            )}
+            <h2 className="text-2xl font-semibold mb-2">{project.title}</h2>
+            <p className="text-gray-700 mb-3 text-sm">{project.description}</p>
+            {project.technologies && (
+              <div className="mb-3">
+                <h4 className="font-semibold text-xs text-gray-600">Tecnologías:</h4>
+                <div className="flex flex-wrap gap-1 mt-1">
+                  {project.technologies.split(',').map(tech => tech.trim()).filter(tech => tech).map((tech, index) => (
+                    <span key={index} className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded">
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div className="mt-4 flex flex-wrap gap-2">
+              {project.project_url && (
                 <a
-                  href={project.link}
+                  href={project.project_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-auto bg-sky-500 text-white text-center font-medium py-2 px-4 rounded-md hover:bg-sky-600 transition-colors duration-200 self-start"
+                  className="text-sm bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-3 rounded transition-colors duration-200"
                 >
                   Ver Proyecto
                 </a>
               )}
+              {project.repository_url && (
+                <a
+                  href={project.repository_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-3 rounded transition-colors duration-200"
+                >
+                  Ver Repositorio
+                </a>
+              )}
             </div>
+             <p className="text-xs text-gray-500 mt-3">
+                Actualizado: {new Date(project.updated_at).toLocaleDateString()}
+            </p>
           </div>
         ))}
       </div>
