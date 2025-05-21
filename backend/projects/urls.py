@@ -1,13 +1,12 @@
 # backend/projects/urls.py
-from django.urls import path, include
+from django.urls import path, include # Asegúrate de que 'include' esté importado
 from rest_framework.routers import DefaultRouter
 from .views import ProjectViewSet
 
-# Crea un router y registra nuestro viewset con él.
 router = DefaultRouter()
-router.register(r'projects', ProjectViewSet, basename='project') # El basename es importante si personalizas el queryset en el ViewSet
+router.register(r'projects', ProjectViewSet, basename='project')
+# El router genera URLs como 'projects/' y 'projects/<pk>/'
 
-# Las URLs de la API son determinadas automáticamente por el router.
 urlpatterns = [
-    path('', include(router.urls)),
+    path('', include(router.urls)), # Esta línea incluye las URLs generadas por el router
 ]
