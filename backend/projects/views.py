@@ -6,9 +6,8 @@ from .serializers import ProjectSerializer
 class ProjectViewSet(viewsets.ModelViewSet):
     """
     API endpoint que permite ver o editar proyectos.
-    Proporciona acciones para list, create, retrieve, update, partial_update, destroy.
+    Cualquiera puede ver la lista, pero solo usuarios autenticados pueden crear/editar/borrar.
     """
-    queryset = Project.objects.all().order_by('-created_at')
+    queryset = Project.objects.all()
     serializer_class = ProjectSerializer
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly] # Ejemplo: solo usuarios autenticados pueden modificar
-    permission_classes = [permissions.AllowAny] # Para este ejemplo, permitimos cualquier acceso
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]

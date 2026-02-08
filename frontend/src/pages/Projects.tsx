@@ -1,113 +1,98 @@
-// frontend/src/pages/Projects.tsx
-import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Asegúrate de haberlo instalado: npm install axios
-import { Project } from '../interfaces'; // Importa la interfaz actualizada
-
-// Define la URL base de tu API de Django.
-// Es una buena práctica almacenarla en una variable de entorno para producción.
-const API_BASE_URL = 'http://localhost:8000/api';
+import React from 'react';
+import { useProjects } from '../hooks/useProjects';
 
 const Projects: React.FC = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        // Realiza la petición GET al endpoint de proyectos de tu API Django
-        const response = await axios.get<Project[]>(`${API_BASE_URL}/projects/`);
-        setProjects(response.data);
-      } catch (err) {
-        if (axios.isAxiosError(err)) {
-          console.error('Error fetching projects:', err.message);
-          setError(`Error al cargar los proyectos: ${err.message}. Asegúrate de que el backend Django esté corriendo en http://localhost:8000 y que CORS esté configurado correctamente.`);
-        } else {
-          console.error('Unexpected error:', err);
-          setError('Ocurrió un error inesperado al cargar los proyectos.');
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProjects();
-  }, []); // El array vacío asegura que useEffect se ejecute solo una vez al montar el componente
+  const { projects, loading, error } = useProjects();
 
   if (loading) {
-    return <div className="container mx-auto p-4 text-center">Cargando proyectos...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500"></div>
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="container mx-auto p-4 text-center text-red-500">{error}</div>;
+    return (
+      <div className="container mx-auto p-4 text-center text-red-500 bg-red-50 rounded-lg mt-10">
+        <p className="font-semibold">{error}</p>
+        <p className="text-sm mt-2">Asegúrate de que el backend esté corriendo.</p>
+      </div>
+    );
   }
 
   if (projects.length === 0) {
-    return <div className="container mx-auto p-4 text-center">No hay proyectos para mostrar. Puedes añadir algunos desde el panel de administración de Django.</div>;
+    return (
+      <div className="container mx-auto p-4 text-center mt-10">
+        <h2 className="text-2xl font-semibold text-gray-600">No hay proyectos para mostrar.</h2>
+        <p className="text-gray-500 mt-2">Puedes añadir algunos desde el panel de administración.</p>
+      </div>
+    );
   }
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6 text-center">Mis Proyectos</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <h1 className="text-4xl font-bold mb-10 text-center text-gray-800">Mis Proyectos</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {projects.map((project) => (
-          <div key={project.id} className="bg-white rounded-lg shadow-lg overflow-hidden p-6 transform hover:scale-105 transition-transform duration-300">
-            {project.image_url && (
+          <article key={project.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+            {project.image_url ? (
               <img 
                 src={project.image_url} 
-                alt={`Imagen de ${project.title}`} 
-                className="w-full h-48 object-cover mb-4 rounded"
+                alt={project.title} 
+                className="w-full h-52 object-cover"
                 onError={(e) => {
-                  // Manejo de error si la imagen no carga
-                  const target = e.target as HTMLImageElement;
-                  target.onerror = null; // previene bucles infinitos si la imagen placeholder también falla
-                  target.src = `https://placehold.co/600x400/EEE/31343C?text=Imagen+no+disponible`;
-                  target.alt = `Placeholder para ${project.title}`;
+                  (e.target as HTMLImageElement).src = 'https://placehold.co/600x400?text=Proyecto';
                 }}
               />
-            )}
-            <h2 className="text-2xl font-semibold mb-2">{project.title}</h2>
-            <p className="text-gray-700 mb-3 text-sm">{project.description}</p>
-            {project.technologies && (
-              <div className="mb-3">
-                <h4 className="font-semibold text-xs text-gray-600">Tecnologías:</h4>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {project.technologies.split(',').map(tech => tech.trim()).filter(tech => tech).map((tech, index) => (
-                    <span key={index} className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded">
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+            ) : (
+              <div className="w-full h-52 bg-gray-200 flex items-center justify-center text-gray-400">
+                Sin imagen
               </div>
             )}
-            <div className="mt-4 flex flex-wrap gap-2">
-              {project.project_url && (
-                <a
-                  href={project.project_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-3 rounded transition-colors duration-200"
-                >
-                  Ver Proyecto
-                </a>
+            
+            <div className="p-6">
+              <h2 className="text-2xl font-bold mb-3 text-gray-800">{project.title}</h2>
+              <p className="text-gray-600 mb-4 line-clamp-3 text-sm leading-relaxed">
+                {project.description}
+              </p>
+              
+              {project.technologies && (
+                <div className="mb-6">
+                  <div className="flex flex-wrap gap-2">
+                    {project.technologies.split(',').map((tech, index) => (
+                      <span key={index} className="bg-indigo-50 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full border border-indigo-100">
+                        {tech.trim()}
+                      </span>
+                    ))}
+                  </div>
+                </div>
               )}
-              {project.repository_url && (
-                <a
-                  href={project.repository_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-sm bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-3 rounded transition-colors duration-200"
-                >
-                  Ver Repositorio
-                </a>
-              )}
+              
+              <div className="flex gap-3 mt-auto">
+                {project.project_url && (
+                  <a
+                    href={project.project_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 text-center text-sm bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 px-4 rounded-lg transition-colors"
+                  >
+                    Demo
+                  </a>
+                )}
+                {project.repository_url && (
+                  <a
+                    href={project.repository_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 text-center text-sm bg-gray-800 hover:bg-gray-900 text-white font-bold py-2.5 px-4 rounded-lg transition-colors"
+                  >
+                    Código
+                  </a>
+                )}
+              </div>
             </div>
-             <p className="text-xs text-gray-500 mt-3">
-                Actualizado: {new Date(project.updated_at).toLocaleDateString()}
-            </p>
-          </div>
+          </article>
         ))}
       </div>
     </div>
@@ -115,3 +100,4 @@ const Projects: React.FC = () => {
 };
 
 export default Projects;
+
